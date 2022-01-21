@@ -27,11 +27,34 @@ export const TransactionProvider = ({ children }) => {
     message: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [trasactions, setTrasactions] = useState([]);
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem("transactionCount")
   );
   const handleChange = (e, name) => {
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
+  };
+  const getAllTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please install metamask");
+      const transactionContract = getEthereumContract();
+      const availableTransactions = await transactionContract.getAllTansactions();
+
+      const structuredTransactions = availableTransactions.map((transaction) => ({
+        addressTo: transaction.receiver,
+        addressFrom: transaction.sender,
+        timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+        message: transaction.message,
+        keyword: transaction.keyword,
+        amount: parseInt(transaction.amount._hex) / (10 ** 18)
+      }));
+
+      console.log(structuredTransactions);
+      setTrasactions(structuredTransactions)
+
+    } catch (error) {
+      console.log(error);
+    }
   };
   const checkIfXalletIsConnected = async () => {
     try {
@@ -40,7 +63,7 @@ export const TransactionProvider = ({ children }) => {
       console.log(accounts);
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
-        //getAllTRansaction
+        getAllTransactions();
       } else {
         console.log("No account found.");
       }
@@ -49,9 +72,7 @@ export const TransactionProvider = ({ children }) => {
       throw new Error("No ethereum object.");
     }
   };
-  useEffect(() => {
-    checkIfXalletIsConnected();
-  }, []);
+
   const connectWallet = async () => {
     try {
       if (!ethereum) return alert("Please install metamask");
@@ -59,6 +80,17 @@ export const TransactionProvider = ({ children }) => {
         method: "eth_requestAccounts",
       });
       setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error);
+      throw new Error("No ethereum object.");
+    }
+  };
+
+  const checkIfTransactionExist = async () => {
+    try {
+      const transactionContract = getEthereumContract();
+      const transactionCount = await transactionContract.getTransactionsCount();
+      window.localStorage.setItem("transactionCount", transactionCount);
     } catch (error) {
       console.log(error);
       throw new Error("No ethereum object.");
@@ -100,7 +132,10 @@ export const TransactionProvider = ({ children }) => {
       throw new Error("No ethereum object.");
     }
   };
-
+  useEffect(() => {
+    checkIfXalletIsConnected();
+    checkIfTransactionExist();
+  }, []);
   return (
     <Transaction.Provider
       value={{
@@ -109,6 +144,8 @@ export const TransactionProvider = ({ children }) => {
         formData,
         sendTransaction,
         handleChange,
+        trasactions,
+        isLoading
       }}
     >
       {children}

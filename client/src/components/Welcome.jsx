@@ -19,7 +19,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-  const { connectWallet, CurrentAccount,formData ,sendTransaction,handleChange } = useContext(Transaction);
+  const { connectWallet, CurrentAccount,formData ,sendTransaction,handleChange,isLoading } = useContext(Transaction);
 
  
   const inputData = [
@@ -121,7 +121,7 @@ const Welcome = () => {
               />
             ))}
             <div className="h-[1px] w-full bg-gray-400 my-2" />
-            {false ? (
+            {isLoading ? (
               <Loader />
             ) : (
               <button

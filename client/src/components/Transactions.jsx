@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 
 import { Transaction } from "../context/Transaction";
-import dummyData from "../utils/FakeData";
+
 import { shortenAddress } from "../utils/shortenAddress";
 import useFetch from "../hooks/useFetch";
 
@@ -34,10 +34,11 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
             </>
           )}
         </div>
-        <img  src={gif || url} />
-        <div className="bg-black p-3 px-5 rounded-3xl -mt-5 shadow-2xl ">
-          <p className="text-[#37c7da] font-bold">{timestamp}</p>
-          className="w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover"
+        <img  src={gif || url} 
+          className="w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover" />
+        <div className="bg-black p-3 px-5   rounded-3xl -mt-5 shadow-2xl">
+          <p className="text-[#37c7da] flex items-center justify-center font-bold">{timestamp}</p>
+        
         </div>
       </div>
     </div>
@@ -45,7 +46,7 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
 };
 
 const Transactions=()=> {
-  const { transactions, currentAccount } = useContext(Transaction);
+  const { trasactions, currentAccount } = useContext(Transaction);
   return (
 <div className="flex w-full justify-center items-center 2xl:px-20 gradient-bg-transactions">
       <div className="flex flex-col md:p-12 py-12 px-4">
@@ -60,7 +61,7 @@ const Transactions=()=> {
         )}
 
         <div className="flex flex-wrap justify-center items-center mt-10">
-          {[...dummyData].reverse().map((transaction, i) => (
+          {[...trasactions].reverse().map((transaction, i) => (
             <TransactionsCard key={i} {...transaction} />
           ))}
         </div>
