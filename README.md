@@ -26,3 +26,6 @@ https://eth-converter.com/
 
 # deploy command 
 npx hardhat run scripts/deploy.js --network ropsten
+
+# developers gify 
+https://developers.giphy.com/
