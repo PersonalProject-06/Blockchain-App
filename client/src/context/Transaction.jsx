@@ -27,7 +27,7 @@ export const TransactionProvider = ({ children }) => {
     message: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [trasactions, setTrasactions] = useState([]);
+  const [transactions, settransactions] = useState([]);
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem("transactionCount")
   );
@@ -50,17 +50,17 @@ export const TransactionProvider = ({ children }) => {
       }));
 
       console.log(structuredTransactions);
-      setTrasactions(structuredTransactions)
+      settransactions(structuredTransactions)
 
     } catch (error) {
       console.log(error);
     }
   };
-  const checkIfXalletIsConnected = async () => {
+  const checkIfWalletConnected = async () => {
     try {
       if (!ethereum) return alert("Please install metamask");
       const accounts = await ethereum.request({ method: "eth_accounts" });
-      console.log(accounts);
+  
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
         getAllTransactions();
@@ -121,19 +121,20 @@ export const TransactionProvider = ({ children }) => {
         keyword
       );
       setIsLoading(true);
-      console.log(`Loading - ${transactionHash.hash}`);
+  
       await transactionHash.wait();
       setIsLoading(false);
-      console.log(`success - ${transactionHash.hash}`);
+     
       const transactionCount = await transactionContract.getTransactionsCount();
       setTransactionCount(transactionCount.toNumber());
+      window.reload()
     } catch (error) {
       console.log(error);
       throw new Error("No ethereum object.");
     }
   };
   useEffect(() => {
-    checkIfXalletIsConnected();
+    checkIfWalletConnected();
     checkIfTransactionExist();
   }, []);
   return (
@@ -144,7 +145,7 @@ export const TransactionProvider = ({ children }) => {
         formData,
         sendTransaction,
         handleChange,
-        trasactions,
+        transactions,
         isLoading
       }}
     >
