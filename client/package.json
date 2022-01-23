@@ -1,7 +1,7 @@
 {
   "name": "crypto",
   "version": "0.0.0",
-  "homepage": "https://firas-debich.github.io/Blockchain-App/",
+
   "scripts": {
     "dev": "vite",
     "build": "vite build",
